@@ -1,11 +1,7 @@
-# netlify.toml — serves the standalone index.html at repo root
-# No build step needed — pure static HTML deployment
-
 [build]
   publish = "."
-  command = ""
 
 [[redirects]]
-  from   = "/*"
-  to     = "/index.html"
+  from = "/*"
+  to = "/index.html"
   status = 200
