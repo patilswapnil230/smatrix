@@ -1,16 +1,20 @@
 // src/utils/api.js — Centralised Axios instance
-// All API calls go through this helper so base URL and
-// auth headers are set in ONE place (DRY principle).
+// Production (Netlify): set VITE_API_URL in Netlify environment variables
+// Development: Vite proxy forwards /api → localhost:5000
 
 import axios from 'axios';
 
+const BASE_URL = import.meta.env.VITE_API_URL
+  ? `${import.meta.env.VITE_API_URL}/api`
+  : '/api';
+
 const api = axios.create({
-  baseURL: '/api',          // Proxied to Express via Vite in dev
+  baseURL: BASE_URL,
   timeout: 15000,
   headers: { 'Content-Type': 'application/json' },
 });
 
-// ── Request interceptor: attach JWT if present ───────────────
+// Attach JWT token to every request if present
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('smatrix_token');
   if (token) {
@@ -19,12 +23,11 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// ── Response interceptor: handle 401 globally ────────────────
+// Handle 401 globally — clear auth and redirect to login
 api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // Token expired — clear storage and redirect to login
       localStorage.removeItem('smatrix_token');
       localStorage.removeItem('smatrix_user');
       window.location.href = '/admin/login';
