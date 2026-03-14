@@ -1,0 +1,23 @@
+# netlify.toml — Netlify build configuration
+# Tells Netlify how to build the React frontend from the GitHub repo
+
+[build]
+  base    = "frontend"          # Root directory for the build
+  command = "npm install && npm run build"
+  publish = "frontend/dist"     # Output folder Vite produces
+
+# ── SPA redirect ─────────────────────────────────────────────
+# React Router handles all routes client-side.
+# Without this, refreshing /services or /admin gives a 404.
+[[redirects]]
+  from   = "/*"
+  to     = "/index.html"
+  status = 200
+
+# ── Security headers ─────────────────────────────────────────
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options        = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy        = "strict-origin-when-cross-origin"
