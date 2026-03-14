@@ -2,9 +2,9 @@
 # Tells Netlify how to build the React frontend from the GitHub repo
 
 [build]
-  base    = "frontend"          # Root directory for the build
+  base = "frontend"
+  publish = "dist"
   command = "npm install && npm run build"
-  publish = "frontend/dist"     # Output folder Vite produces
 
 # ── SPA redirect ─────────────────────────────────────────────
 # React Router handles all routes client-side.
